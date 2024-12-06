@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jabed Special Care - Weekly Routine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+        }
+        header img {
+            position: absolute;
+            left: 20px;
+            top: 10px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 90%;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 12px;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #4CAF50;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+       
+        <h1>Jabed Special Care</h1>
+    </header>
+    <main>
+        <table id="routineTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>Subjects</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic rows will be added here -->
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <p>&copy; 2024 Jabed Special Care</p>
+    </footer>
+    <script>
+        const routine = [
+            { day: "Friday", time: "8:00 AM - 10:30 AM", subjects: "Physics + Math" },
+            { day: "Saturday", time: "5:00 PM - 8:00 PM", subjects: "Physics + Math" },
+            { day: "Monday", time: "5:00 PM - 8:00 PM", subjects: "Chemistry + Math" },
+            { day: "Wednesday", time: "5:00 PM - 8:00 PM", subjects: "Physics + Chemistry" }
+        ];
+
+        const tableBody = document.querySelector("#routineTable tbody");
+        const today = new Date();
+        const endDate = new Date(2025, 2, 28); // 28th February 2025
+
+        // Function to format date as DD/MM/YYYY
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Function to generate a rolling schedule
+        function generateRollingSchedule(startDate, endDate) {
+            const schedule = [];
+            let currentDate = new Date(startDate);
+            let index = 0;
+
+            while (currentDate <= endDate) {
+                const entry = routine[index];
+                schedule.push({
+                    date: new Date(currentDate),
+                    ...entry
+                });
+
+                // Move to the next entry and increment date by the correct interval
+                index = (index + 1) % routine.length;
+                currentDate.setDate(currentDate.getDate() + 1);
+                const nextDay = routine[index].day;
+                while (currentDate.getDay() !== ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].indexOf(nextDay)) {
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+            }
+            return schedule;
+        }
+
+        // Generate and populate the table dynamically
+        const rollingSchedule = generateRollingSchedule(today, endDate);
+
+        rollingSchedule.forEach((entry) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${formatDate(entry.date)}</td>
+                <td>${entry.day}</td>
+                <td>${entry.time}</td>
+                <td>${entry.subjects}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    </script>
+</body>
+</html>

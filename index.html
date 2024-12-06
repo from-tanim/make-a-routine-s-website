@@ -51,25 +51,44 @@
             padding: 10px 0;
             background-color: #4CAF50;
             color: white;
-            position: fixed;
+            position: relative;
             bottom: 0;
             width: 100%;
+        }
+        button {
+            background-color: #0000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .exam-date {
+            font-weight: bold;
+            color: red;
         }
     </style>
 </head>
 <body>
     <header>
-       
+        
+        <!--IMAGE CAM BE PLACED HERE FOR LOGO -->
         <h1>Jabed Special Care</h1>
     </header>
     <main>
         <table id="routineTable">
             <thead>
                 <tr>
+                    <th>Class Serial</th>
                     <th>Date</th>
                     <th>Day</th>
                     <th>Time</th>
                     <th>Subjects</th>
+                    <th>Exam Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -78,8 +97,10 @@
         </table>
     </main>
     <footer>
+        <button id="addExamButton" onclick="addExamDate()">Add Exam Date</button>
         <p>&copy; 2024 Jabed Special Care</p>
     </footer>
+
     <script>
         const routine = [
             { day: "Friday", time: "8:00 AM - 10:30 AM", subjects: "Physics + Math" },
@@ -90,7 +111,7 @@
 
         const tableBody = document.querySelector("#routineTable tbody");
         const today = new Date();
-        const endDate = new Date(2025, 2, 28); // 28th February 2025
+        const endDate = new Date(2025, 01, 31); // 31st January 2025
 
         // Function to format date as DD/MM/YYYY
         function formatDate(date) {
@@ -127,16 +148,37 @@
         // Generate and populate the table dynamically
         const rollingSchedule = generateRollingSchedule(today, endDate);
 
-        rollingSchedule.forEach((entry) => {
+        rollingSchedule.forEach((entry, index) => {
             const row = document.createElement("tr");
             row.innerHTML = `
+                <td>${index + 1}</td> <!-- Class Serial -->
                 <td>${formatDate(entry.date)}</td>
                 <td>${entry.day}</td>
                 <td>${entry.time}</td>
                 <td>${entry.subjects}</td>
+                <td class="exam-date" id="exam-${index}"></td>
             `;
             tableBody.appendChild(row);
         });
+
+        // Function to add an exam date
+        function addExamDate() {
+            const teacherId = prompt("Enter Teacher ID: ");
+            if (teacherId !== "25A48") {
+                alert("You are not authorized to add an exam date.");
+                return;
+            }
+
+            const dateIndex = prompt("Enter the index of the day you want to add the exam to (0 for first day, 1 for second day, etc.): ");
+            const examDate = prompt("Enter the exam date (DD/MM/YYYY): ");
+
+            const examCell = document.getElementById(`exam-${dateIndex}`);
+            if (examCell) {
+                examCell.textContent = `Exam Date: ${examDate}`;
+            } else {
+                alert("Invalid index.");
+            }
+        }
     </script>
 </body>
 </html>
